@@ -1,3 +1,6 @@
+import java.util.AbstractList;
+import java.util.Iterator;
+
 public class OneWayLinkedListWithHead<E> extends AbstractList<E> {
     Element head = null;
 
@@ -57,7 +60,7 @@ public class OneWayLinkedListWithHead<E> extends AbstractList<E> {
         return true;
     }
 
-    @Override
+    //@Override
     public int indexOf(E data) {
         int pos = 0;
         Element actElem = head;
@@ -70,7 +73,7 @@ public class OneWayLinkedListWithHead<E> extends AbstractList<E> {
         return -1;
     }
 
-    @Override
+    //@Override
     public boolean contains(E data) {
         return indexOf(data) >= 0;
     }
@@ -79,90 +82,96 @@ public class OneWayLinkedListWithHead<E> extends AbstractList<E> {
     public E get(int index) {
         Element actElem = getElement(index);
         return actElem.getValue();
-        @Override
-        public E set ( int index, E data){
-            Element actElem = getElement(index);
-            E elemData = actElem.getValue();
-            actElem.setValue(data);
-            return elemData;
-        }
-        @Override
-        public E remove ( int index){
-            if (index < 0 || head == null) throw new IndexOutOfBoundsException();
-            if (index == 0) {
-                E retValue = head.getValue();
-                head = head.getNext();
-                return retValue;
-            }
-            Element actElem = getElement(index - 1);
-            if (actElem.getNext() == null)
-                throw new IndexOutOfBoundsException();
-            E retValue = actElem.getNext().getValue();
-            actElem.setNext(actElem.getNext().getNext());
+    }
+
+    @Override
+    public E set(int index, E data) {
+        Element actElem = getElement(index);
+        E elemData = actElem.getValue();
+        actElem.setValue(data);
+        return elemData;
+    }
+
+    @Override
+    public E remove(int index) {
+        if (index < 0 || head == null) throw new IndexOutOfBoundsException();
+        if (index == 0) {
+            E retValue = head.getValue();
+            head = head.getNext();
             return retValue;
         }
-        @Override
-        public boolean remove (E value){
-            if (head == null)
-                return false;
-            if (head.getValue().equals(value)) {
-                head = head.getNext();
-                return true;
-            }
-            Element actElem = head;
-            while (actElem.getNext() != null && !actElem.getNext().getValue().equals(value))
-                actElem = actElem.getNext();
-            if (actElem.getNext() == null)
-                return false;
-            actElem.setNext(actElem.getNext().getNext());
+        Element actElem = getElement(index - 1);
+        if (actElem.getNext() == null)
+            throw new IndexOutOfBoundsException();
+        E retValue = actElem.getNext().getValue();
+        actElem.setNext(actElem.getNext().getNext());
+        return retValue;
+    }
+
+    //@Override
+    public boolean remove(E value) {
+        if (head == null)
+            return false;
+        if (head.getValue().equals(value)) {
+            head = head.getNext();
             return true;
         }
-        private class InnerIterator implements Iterator<E> {
-            Element actElem;
+        Element actElem = head;
+        while (actElem.getNext() != null && !actElem.getNext().getValue().equals(value))
+            actElem = actElem.getNext();
+        if (actElem.getNext() == null)
+            return false;
+        actElem.setNext(actElem.getNext().getNext());
+        return true;
+    }
 
-            public InnerIterator() {
-                actElem = head;
-            }
+    @Override
+    public Iterator<E> iterator() {
+        return new InnerIterator();
+    }
 
-            @Override
-            public boolean hasNext() {
-                return actElem != null;
-            }
+    private class InnerIterator implements Iterator<E> {
+        Element actElem;
 
-            @Override
-            public E next() {
-                E value = actElem.getValue();
-                actElem = actElem.getNext();
-                return value;
-            }
+        public InnerIterator() {
+            actElem = head;
         }
+
         @Override
-        public Iterator<E> iterator () {
-            return new InnerIterator();
+        public boolean hasNext() {
+            return actElem != null;
         }
 
-
-        private class Element {
-            private E value;
-            private Element next;
-
-            Element(E data) {
-                this.value = data;
-            }
-
-            public E getValue() {
-                return value;
-            }
-
-            public void setValue(E value) {
-                this.value = value;
-            }
-
-            public Element getNext() {
-                return next;
-            }
-
-            public void setNext(Element next) {
-                this.next = next;
-            }
+        @Override
+        public E next() {
+            E value = actElem.getValue();
+            actElem = actElem.getNext();
+            return value;
         }
+    }
+
+    private class Element {
+        private E value;
+        private Element next;
+
+        Element(E data) {
+            this.value = data;
+        }
+
+        public E getValue() {
+            return value;
+        }
+
+        public void setValue(E value) {
+            this.value = value;
+        }
+
+        public Element getNext() {
+            return next;
+        }
+
+        public void setNext(Element next) {
+            this.next = next;
+        }
+    }
+}
