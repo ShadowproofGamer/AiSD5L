@@ -3,18 +3,15 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Iterator;
+import java.util.Scanner;
 
 public class Menu {
 
     DataBase db;
+    Scanner scan = new Scanner(System.in);
 
     public Menu() {
-
-    }
-
-    boolean dbCreation() {
         db = new DataBase();
-        return true;
     }
 
     Pracownik peselPracownikConverter(int pesel) throws NoWorkerFoundException {
@@ -26,18 +23,22 @@ public class Menu {
         throw new NoWorkerFoundException();
     }
 
+    boolean dbCreation() {
+        db = new DataBase();
+        return true;
+    }
+
     boolean readFromFile() {
-        try(
+        try (
                 FileInputStream fis = new FileInputStream("src/txt.bin");
                 ObjectInputStream ois = new ObjectInputStream(fis);
         ) {
             int l = ois.readInt();
-            for(int k=0;k<l;k++){
+            for (int k = 0; k < l; k++) {
                 db.add((Pracownik) ois.readObject());
             }
             return true;
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.out.println(e);
             return false;
         }
@@ -46,6 +47,26 @@ public class Menu {
     void printDB() {
         Iterator<Pracownik> it = db.iterator();
         while (it.hasNext()) System.out.println(it.next());
+    }
+
+    boolean addOne() {
+
+        System.out.println("Wpisz nazwisko:");
+        String nazwisko = scan.next();
+        System.out.println("Wpisz imie:");
+        String imie = scan.next();
+        System.out.println("Wpisz pesel:");
+        String pesel = scan.next();
+        System.out.println("Wpisz stanowisko:");
+        String stanowisko = scan.next();
+        System.out.println("Wpisz staż (lata):");
+        int staz = scan.nextInt();
+        System.out.println("Wpisz datę urodzenia (dd.mm.rrrr):");
+        String dataUr = scan.next();
+        System.out.println("Wpisz pensję:");
+        int pensja = scan.nextInt();
+        db.add(new Pracownik(pesel, nazwisko+" "+imie, dataUr, stanowisko, pensja, staz));
+        return true;
     }
 
     void printOne(int pesel) {
@@ -121,5 +142,9 @@ public class Menu {
             System.out.println(e);
             return false;
         }
+    }
+
+    void mainLoop(){
+        //TODO main loop
     }
 }
